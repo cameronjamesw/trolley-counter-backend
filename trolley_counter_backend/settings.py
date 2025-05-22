@@ -28,12 +28,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.herokuapp.com',
+    'localhost',        
+    '127.0.0.1',
+]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.herokuapp.com',
+    'http://127.0.0.1:8000',
 ]
 
 # Application definition
