@@ -1,0 +1,1 @@
+web: gunicorn trolley_counter_backend.wsgi
