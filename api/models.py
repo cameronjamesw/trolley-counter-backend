@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from .mixins import LabelValidationMixin
 
 # Create your models here.
 
@@ -30,35 +31,27 @@ class Trolley(models.Model):
     def __str__(self):
         return f"Trolley number {self.id}"
 
-class FrontLabel(models.Model):
+class FrontLabel(LabelValidationMixin, models.Model):
     trolley = models.ForeignKey(Trolley, on_delete=models.CASCADE)
     shape = models.IntegerField(choices=Shapes.choices, default=Shapes.SQUARE)
     checked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"A back, {self.get_shape_display()} label, linked to trolley number: {self.trolley.id} | Created at {self.created_at}"
+        return f"A front, {self.get_shape_display()} label, linked to trolley number: {self.trolley.id} | Created at {self.created_at}"
 
     def clean(self):
-        if self.trolley and not self.pk:  # Only validate on creation
-            count = FrontLabel.objects.filter(trolley=self.trolley).count()
-            if self.trolley.totes_count == 1 and count >= 8:
-                raise ValidationError(("Small trolleys cannot have more than 8 totes."))
-            elif self.trolley.totes_count != 1 and count >= 10:
-                raise ValidationError(("Big trolleys cannot have more than 10 totes."))
-            
-        
-        # Check if this shape is already used for the same trolley
-        if FrontLabel.objects.filter(trolley=self.trolley, shape=self.shape).exists():
-            shape_name = Shapes(self.shape).label  # Get display name like "Square"
-            raise ValidationError((f"The shape '{shape_name}' is already assigned to this trolley."))
+        super().clean()
+        if self.trolley:
+            self.validate_max_totes()
+            self.validate_unique_shape()
 
     def save(self, *args, **kwargs):
-        self.full_clean()  # Ensure clean() is called before saving
+        self.full_clean()
         super().save(*args, **kwargs)
 
 
-class BackLabel(models.Model):
+class BackLabel(LabelValidationMixin, models.Model):
     trolley = models.ForeignKey(Trolley, on_delete=models.CASCADE)
     shape = models.IntegerField(choices=Shapes.choices, default=Shapes.SQUARE)
     checked = models.BooleanField(default=False)
@@ -68,19 +61,11 @@ class BackLabel(models.Model):
         return f"A back, {self.get_shape_display()} label, linked to trolley number: {self.trolley.id} | Created at {self.created_at}"
 
     def clean(self):
-        if self.trolley and not self.pk:  # Only validate on creation
-            count = BackLabel.objects.filter(trolley=self.trolley).count()
-            if self.trolley.totes_count == 1 and count >= 8:
-                raise ValidationError(("Small trolleys cannot have more than 8 totes."))
-            elif self.trolley.totes_count != 1 and count >= 10:
-                raise ValidationError(("Big trolleys cannot have more than 10 totes."))
-            
-        
-        # Check if this shape is already used for the same trolley
-        if BackLabel.objects.filter(trolley=self.trolley, shape=self.shape).exists():
-            shape_name = Shapes(self.shape).label  # Get display name like "Square"
-            raise ValidationError((f"The shape '{shape_name}' is already assigned to this trolley."))
+        super().clean()
+        if self.trolley:
+            self.validate_max_totes()
+            self.validate_unique_shape()
 
     def save(self, *args, **kwargs):
-        self.full_clean()  # Ensure clean() is called before saving
+        self.full_clean()
         super().save(*args, **kwargs)
