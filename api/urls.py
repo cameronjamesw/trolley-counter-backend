@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import TrolleyView, TrolleyInfo
 
 urlpatterns = [
-    path('example/', views.index, name="home"),
+    path('trolleys/', TrolleyView.as_view(), name='trolley-list-create'),
+    path('trolleys/<int:pk>/', TrolleyInfo.as_view(), name='trolley-detail'),
 ]
