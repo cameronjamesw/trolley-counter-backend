@@ -43,3 +43,11 @@ class BackLabelListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         trolley_id = self.kwargs['trolley_id']
         serializer.save(trolley_id=trolley_id)
+
+class FrontLabelDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = FrontLabel.objects.all()
+    serializer_class = FrontLabelSerializer
+
+class BackLabelDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = BackLabel.objects.all()
+    serializer_class = BackLabelSerializer
