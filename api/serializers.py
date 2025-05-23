@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Trolley, FrontLabel, BackLabel, Shapes
+from .models import Trolley, FrontLabel, BackLabel, Count
 from .label_serializers import FrontLabelSerializer, BackLabelSerializer
 
 class TrolleySerializer(serializers.ModelSerializer):
@@ -31,6 +31,11 @@ class TrolleySerializer(serializers.ModelSerializer):
             'missing_front_labels', 'missing_back_labels',
             'missing_front_labels_count', 'missing_back_labels_count',
         )
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['totes_count'] = Count(instance.totes_count).label
+        return rep
     
     def create(self, validated_data):
         front_labels_data = validated_data.pop('front_labels', [])
