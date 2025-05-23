@@ -52,6 +52,60 @@ class TrolleySerializer(serializers.ModelSerializer):
 
     def get_missing_back_labels_count(self, obj):
         return BackLabel.objects.filter(trolley=obj, checked=False).count()
+    
+    def create(self, validated_data):
+        front_labels_data = validated_data.pop('front_labels', [])
+        back_labels_data = validated_data.pop('back_labels', [])
+        trolley = Trolley.objects.create(**validated_data)
+
+        # Create front labels linked to trolley
+        for label_data in front_labels_data:
+            FrontLabel.objects.create(trolley=trolley, **label_data)
+
+        # Create back labels linked to trolley
+        for label_data in back_labels_data:
+            BackLabel.objects.create(trolley=trolley, **label_data)
+
+        return trolley
+
+    def update(self, instance, validated_data):
+        front_labels_data = validated_data.pop('front_labels', [])
+        back_labels_data = validated_data.pop('back_labels', [])
+
+        # Update trolley fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Update front labels
+        self._update_nested_labels(instance, FrontLabel, front_labels_data)
+
+        # Update back labels
+        self._update_nested_labels(instance, BackLabel, back_labels_data)
+
+        return instance
+
+    def _update_nested_labels(self, trolley, model, labels_data):
+        """
+        Update or create nested labels for the trolley.
+        labels_data: list of dicts with 'id' (optional), 'shape', 'checked'
+        """
+        existing_labels = model.objects.filter(trolley=trolley)
+        existing_labels_map = {label.id: label for label in existing_labels}
+
+        sent_ids = set()
+        for label_data in labels_data:
+            label_id = label_data.get('id', None)
+            if label_id and label_id in existing_labels_map:
+                # Update existing label
+                label = existing_labels_map[label_id]
+                label.shape = label_data.get('shape', label.shape)
+                label.checked = label_data.get('checked', label.checked)
+                label.save()
+                sent_ids.add(label_id)
+            else:
+                # Create new label
+                model.objects.create(trolley=trolley, **label_data)
 
 
 class BaseLabelSerializer(serializers.ModelSerializer):
