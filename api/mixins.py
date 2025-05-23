@@ -4,15 +4,25 @@ class LabelValidationMixin:
     def validate_max_totes(self):
         from .models import Count, FrontLabel, BackLabel  # Local import to avoid circular dependency
 
-        total_labels = (
-            FrontLabel.objects.filter(trolley=self.trolley).count() +
-            BackLabel.objects.filter(trolley=self.trolley).count()
-        )
+        # Determine the max allowed based on tote count
         max_allowed = 8 if self.trolley.totes_count == Count.EIGHT else 10
 
-        if total_labels >= max_allowed and not self.pk:
+        # Determine model type: front or back
+        is_front_label = isinstance(self, FrontLabel)
+        is_back_label = isinstance(self, BackLabel)
+
+        if is_front_label:
+            current_count = FrontLabel.objects.filter(trolley=self.trolley).count()
+        elif is_back_label:
+            current_count = BackLabel.objects.filter(trolley=self.trolley).count()
+        else:
+            raise ValidationError("Unknown label type.")
+
+        # If creating a new instance (no PK), check the limit
+        if not self.pk and current_count >= max_allowed:
+            label_side = "front" if is_front_label else "back"
             raise ValidationError(
-                f"Trolley {self.trolley.id} already has the maximum allowed number of labels ({max_allowed})."
+                f"Trolley {self.trolley.id} already has the maximum allowed number of {label_side} labels ({max_allowed})."
             )
 
     def validate_unique_shape(self):
