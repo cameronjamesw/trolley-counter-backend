@@ -30,6 +30,36 @@ class Trolley(models.Model):
 
     def __str__(self):
         return f"Trolley number {self.id}"
+    
+    @property
+    def front_label_count(self):
+        return self.frontlabel_set.count()
+
+    @property
+    def back_label_count(self):
+        return self.backlabel_set.count()
+
+    @property
+    def total_label_count(self):
+        return self.front_label_count + self.back_label_count
+
+    @property
+    def missing_front_labels(self):
+        missing_shapes = self.frontlabel_set.filter(checked=False).values_list('shape', flat=True)
+        return [Shapes(shape).label for shape in missing_shapes]
+
+    @property
+    def missing_back_labels(self):
+        missing_shapes = self.backlabel_set.filter(checked=False).values_list('shape', flat=True)
+        return [Shapes(shape).label for shape in missing_shapes]
+
+    @property
+    def missing_front_labels_count(self):
+        return self.frontlabel_set.filter(checked=False).count()
+
+    @property
+    def missing_back_labels_count(self):
+        return self.backlabel_set.filter(checked=False).count()
 
 class FrontLabel(LabelValidationMixin, models.Model):
     trolley = models.ForeignKey(Trolley, on_delete=models.CASCADE)
