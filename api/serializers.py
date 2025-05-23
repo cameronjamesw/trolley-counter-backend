@@ -14,20 +14,19 @@ class TrolleySerializer(serializers.ModelSerializer):
     class Meta:
         model = Trolley
         fields = [
-            'id',
-            'totes_count',
-            'notes',
-            'in_use',
-            'created_at',
-            'updated_at',
-            'front_label_count',
-            'back_label_count',
-            'total_label_count',
-            'missing_front_labels',
-            'missing_front_labels_count',
-            'missing_back_labels',
-            'missing_back_labels_count',
+            'id', 'totes_count', 'notes', 'in_use',
+            'created_at', 'updated_at',
+            'front_label_count', 'back_label_count', 'total_label_count',
+            'missing_front_labels', 'missing_back_labels',
+            'missing_front_labels_count', 'missing_back_labels_count',
         ]
+        
+        read_only_fields = (
+            'created_at', 'updated_at',
+            'front_label_count', 'back_label_count', 'total_label_count',
+            'missing_front_labels', 'missing_back_labels',
+            'missing_front_labels_count', 'missing_back_labels_count',
+        )
 
     def get_front_label_count(self, obj):
         return FrontLabel.objects.filter(trolley=obj).count()
