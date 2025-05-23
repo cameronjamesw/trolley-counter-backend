@@ -1,23 +1,22 @@
 from django.core.exceptions import ValidationError
-from .models import Count, Shapes
 
 class LabelValidationMixin:
     def validate_max_totes(self):
-        from .models import FrontLabel, BackLabel  # Local import to avoid circular import
+        from .models import Count, FrontLabel, BackLabel  # Local import to avoid circular dependency
+
         total_labels = (
             FrontLabel.objects.filter(trolley=self.trolley).count() +
             BackLabel.objects.filter(trolley=self.trolley).count()
         )
         max_allowed = 8 if self.trolley.totes_count == Count.EIGHT else 10
 
-        # Only raise if it's a new label (no pk)
         if total_labels >= max_allowed and not self.pk:
             raise ValidationError(
                 f"Trolley {self.trolley.id} already has the maximum allowed number of labels ({max_allowed})."
             )
 
     def validate_unique_shape(self):
-        from .models import FrontLabel, BackLabel  # Local import
+        from .models import Shapes, FrontLabel, BackLabel  # Local import
 
         label_classes = [FrontLabel, BackLabel]
         label_types = ["FrontLabel", "BackLabel"]
