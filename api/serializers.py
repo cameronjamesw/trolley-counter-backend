@@ -20,7 +20,7 @@ class TrolleySerializer(serializers.ModelSerializer):
             'missing_front_labels', 'missing_back_labels',
             'missing_front_labels_count', 'missing_back_labels_count',
         ]
-        
+
         read_only_fields = (
             'created_at', 'updated_at',
             'front_label_count', 'back_label_count', 'total_label_count',
@@ -73,10 +73,12 @@ class BaseLabelSerializer(serializers.ModelSerializer):
 class FrontLabelSerializer(BaseLabelSerializer):
     class Meta:
         model = FrontLabel
-        fields = '__all__'
+        fields = ['id', 'trolley', 'shape', 'checked', 'created_at']
+        read_only_fields = ['created_at']
 
 
 class BackLabelSerializer(BaseLabelSerializer):
     class Meta:
         model = BackLabel
-        fields = '__all__'
+        fields = ['id', 'trolley', 'shape', 'checked', 'created_at']
+        read_only_fields = ['created_at']
