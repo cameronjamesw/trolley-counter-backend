@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import FrontLabel, BackLabel
-from .mixins import LabelValidationMixin
+from .models import FrontLabel, BackLabel, Shapes
 
 class BaseLabelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
@@ -18,13 +17,23 @@ class BaseLabelSerializer(serializers.ModelSerializer):
         return attrs
 
 class FrontLabelSerializer(BaseLabelSerializer):
+    shape_name = serializers.SerializerMethodField()
+
     class Meta:
         model = FrontLabel
-        fields = ['id', 'trolley', 'shape', 'checked', 'created_at']
+        fields = ['id', 'trolley', 'shape', 'shape_name', 'checked', 'created_at']
         read_only_fields = ['created_at']
 
+    def get_shape_name(self, obj):
+        return Shapes(obj.shape).label
+
 class BackLabelSerializer(BaseLabelSerializer):
+    shape_name = serializers.SerializerMethodField()
+    
     class Meta:
         model = BackLabel
-        fields = ['id', 'trolley', 'shape', 'checked', 'created_at']
+        fields = ['id', 'trolley', 'shape', 'shape_name', 'checked', 'created_at']
         read_only_fields = ['created_at']
+
+    def get_shape_name(self, obj):
+        return Shapes(obj.shape).label
