@@ -4,16 +4,16 @@ from .mixins import LabelValidationMixin
 
 class BaseLabelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
-        instance = self.Meta.model(**attrs)
+        # Build model instance for validation
+        instance = self.instance or self.Meta.model(**attrs)
+
+        # Set pk if updating existing instance
         if self.instance:
             instance.pk = self.instance.pk
 
-        validator = LabelValidationMixin()
-        validator.trolley = instance.trolley
-        validator.shape = instance.shape
-        validator.pk = instance.pk
-        validator.validate_max_totes()
-        validator.validate_unique_shape()
+        # Call the validation methods on the model instance
+        instance.validate_max_totes()
+        instance.validate_unique_shape()
 
         return attrs
 
