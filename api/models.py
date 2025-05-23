@@ -25,7 +25,7 @@ class Trolley(models.Model):
     totes_count = models.IntegerField(choices=Count.choices, default=Count.EIGHT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    notes = models.TextField(max_length=200)
+    notes = models.TextField(max_length=200, blank=True)
     in_use = models.BooleanField(default=True)
 
     def __str__(self):

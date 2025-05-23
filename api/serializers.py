@@ -3,20 +3,18 @@ from .models import Trolley, FrontLabel, BackLabel, Shapes
 from .label_serializers import FrontLabelSerializer, BackLabelSerializer
 
 class TrolleySerializer(serializers.ModelSerializer):
-    front_label_count = serializers.IntegerField(read_only=True, source='front_label_count')
-    back_label_count = serializers.IntegerField(read_only=True, source='back_label_count')
-    total_label_count = serializers.IntegerField(read_only=True, source='total_label_count')
+    front_label_count = serializers.IntegerField(read_only=True)
+    back_label_count = serializers.IntegerField(read_only=True)
+    total_label_count = serializers.IntegerField(read_only=True)
     missing_front_labels = serializers.ListField(
-        child=serializers.CharField(), read_only=True, source='missing_front_labels'
-    )
+        child=serializers.CharField(), read_only=True)
     missing_back_labels = serializers.ListField(
-        child=serializers.CharField(), read_only=True, source='missing_back_labels'
-    )
-    missing_front_labels_count = serializers.IntegerField(read_only=True, source='missing_front_labels_count')
-    missing_back_labels_count = serializers.IntegerField(read_only=True, source='missing_back_labels_count')
+        child=serializers.CharField(), read_only=True)
+    missing_front_labels_count = serializers.IntegerField(read_only=True)
+    missing_back_labels_count = serializers.IntegerField(read_only=True)
 
-    front_labels = FrontLabelSerializer(many=True, required=False, source='frontlabel_set')
-    back_labels = BackLabelSerializer(many=True, required=False, source='backlabel_set')
+    front_labels = FrontLabelSerializer(many=True, required=False)
+    back_labels = BackLabelSerializer(many=True, required=False)
 
     class Meta:
         model = Trolley
