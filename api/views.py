@@ -12,6 +12,9 @@ class TrolleyView(generics.ListCreateAPIView):
     def get_queryset(self):
         # You can customize filtering here if needed
         return super().get_queryset()
+    
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
 
 
 class TrolleyInfo(generics.RetrieveUpdateDestroyAPIView):
@@ -31,6 +34,8 @@ class FrontLabelListCreateAPIView(generics.ListCreateAPIView):
         trolley_id = self.kwargs['trolley_id']
         # Optionally, add extra validation if trolley exists etc.
         serializer.save(trolley_id=trolley_id)
+        serializer.save(creator=self.request.user)
+        
 
 
 class BackLabelListCreateAPIView(generics.ListCreateAPIView):
@@ -43,6 +48,7 @@ class BackLabelListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         trolley_id = self.kwargs['trolley_id']
         serializer.save(trolley_id=trolley_id)
+        serializer.save(creator=self.request.user)
 
 class FrontLabelDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = FrontLabel.objects.all()

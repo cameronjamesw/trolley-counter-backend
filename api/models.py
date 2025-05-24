@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 from django.db import models
 from .mixins import LabelValidationMixin
 
@@ -21,7 +21,10 @@ class Shapes(models.IntegerChoices):
     AIRPLANE = 10, 'Airplane'
 
 class Trolley(models.Model):
-    id = models.AutoField(primary_key=True)
+    creator = models.ForeignKey(User, 
+                                on_delete=models.SET_NULL, 
+                                null=True, default=None,
+                                related_name="trollies")
     totes_count = models.IntegerField(choices=Count.choices, default=Count.EIGHT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -62,6 +65,10 @@ class Trolley(models.Model):
         return self.backlabel_set.filter(checked=False).count()
 
 class FrontLabel(LabelValidationMixin, models.Model):
+    creator = models.ForeignKey(User, 
+                                on_delete=models.SET_NULL, 
+                                null=True, default=None,
+                                related_name="front_labels")
     trolley = models.ForeignKey(Trolley, on_delete=models.CASCADE)
     shape = models.IntegerField(choices=Shapes.choices, default=Shapes.SQUARE)
     checked = models.BooleanField(default=False)
@@ -82,6 +89,10 @@ class FrontLabel(LabelValidationMixin, models.Model):
 
 
 class BackLabel(LabelValidationMixin, models.Model):
+    creator = models.ForeignKey(User, 
+                                on_delete=models.SET_NULL, 
+                                null=True, default=None,
+                                related_name="back_labels")
     trolley = models.ForeignKey(Trolley, on_delete=models.CASCADE)
     shape = models.IntegerField(choices=Shapes.choices, default=Shapes.SQUARE)
     checked = models.BooleanField(default=False)

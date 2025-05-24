@@ -3,6 +3,7 @@ from .models import Trolley, FrontLabel, BackLabel, Count
 from .label_serializers import FrontLabelSerializer, BackLabelSerializer
 
 class TrolleySerializer(serializers.ModelSerializer):
+    creator = serializers.ReadOnlyField(source='creator.username')
     front_label_count = serializers.IntegerField(read_only=True)
     back_label_count = serializers.IntegerField(read_only=True)
     total_label_count = serializers.IntegerField(read_only=True)
@@ -19,14 +20,14 @@ class TrolleySerializer(serializers.ModelSerializer):
     class Meta:
         model = Trolley
         fields = [
-            'id', 'totes_count', 'notes', 'in_use', 'created_at', 'updated_at',
-            'front_label_count', 'back_label_count', 'total_label_count',
-            'missing_front_labels', 'missing_back_labels',
+            'id', 'creator', 'totes_count', 'notes', 'in_use', 'created_at', 
+            'updated_at','front_label_count', 'back_label_count',
+            'total_label_count', 'missing_front_labels', 'missing_back_labels',
             'missing_front_labels_count', 'missing_back_labels_count',
             'front_labels', 'back_labels',
         ]
         read_only_fields = (
-            'created_at', 'updated_at',
+            'creator', 'created_at', 'updated_at',
             'front_label_count', 'back_label_count', 'total_label_count',
             'missing_front_labels', 'missing_back_labels',
             'missing_front_labels_count', 'missing_back_labels_count',
