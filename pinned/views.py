@@ -6,7 +6,7 @@ from .serializers import PinnedSerializer
 # Create your views here.
 
 class PinnedList(generics.ListCreateAPIView):
-    permission_classes = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Pinned.objects.all()
     serializer_class = PinnedSerializer
 
@@ -15,6 +15,6 @@ class PinnedList(generics.ListCreateAPIView):
 
 
 class PinnedDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = permissions.IsAuthenticated
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = PinnedSerializer
     queryset = Pinned.objects.all()

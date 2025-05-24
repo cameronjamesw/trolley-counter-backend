@@ -7,7 +7,7 @@ from api.models import Trolley
 class Pinned(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     trolley = models.ForeignKey(
-        Trolley, related_name='favourites', on_delete=models.CASCADE)
+        Trolley, related_name='trollies', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
