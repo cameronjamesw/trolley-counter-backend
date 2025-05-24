@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'api',
+    'pinned',
     'trolley_counter_backend',
     'rest_framework',
 ]
