@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import root_route, logout_route
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('', root_route),
@@ -29,4 +30,6 @@ urlpatterns = [
         'dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')
     ),
     path('api/', include('api.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
