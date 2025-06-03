@@ -47,22 +47,34 @@ SIMPLE_JWT = {
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '.herokuapp.com',
     'localhost',        
     '127.0.0.1',
+    os.environ.get("ALLOWED_HOST"),
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://trolley-counter-backend-3f175e45a111.herokuapp.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.herokuapp.com',
     'http://127.0.0.1:8000',
 ]
+
+if 'CLIENT_ORIGIN' in os.environ:
+    CORS_ALLOWED_ORIGINS = [
+        os.environ.get('CLIENT_ORIGIN')
+    ]
+if 'CLIENT_ORIGIN_DEV' in os.environ:
+    CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.codeinstitute-ide\.net$", ]
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 # Application definition
 
