@@ -21,7 +21,7 @@ Functions:
 @api_view()
 def root_route(request):
     return Response({
-        'message': 'Welcome to the Horizons API'
+        'message': 'Welcome to the Trolley Counter APO'
     }
     )
 
