@@ -74,6 +74,9 @@ if 'CLIENT_ORIGIN' in os.environ:
 
 CORS_ALLOW_CREDENTIALS = True
 
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
 
 # Application definition
 
