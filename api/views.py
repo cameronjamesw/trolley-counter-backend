@@ -1,8 +1,21 @@
 from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Trolley, FrontLabel, BackLabel
 from .serializers import TrolleySerializer, FrontLabelSerializer, BackLabelSerializer
 
 # Create your views here.
+
+class UserDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+        })
 
 class TrolleyView(generics.ListCreateAPIView):
     queryset = Trolley.objects.all()
