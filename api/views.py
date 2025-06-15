@@ -20,7 +20,7 @@ class UserDetailView(APIView):
 class TrolleyView(generics.ListCreateAPIView):
     queryset = Trolley.objects.all()
     serializer_class = TrolleySerializer
-    permission_classes = [permissions.IsAuthenticated]  # adjust permissions as needed
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # adjust permissions as needed
 
     def get_queryset(self):
         # You can customize filtering here if needed
