@@ -4,16 +4,23 @@ from .models import FrontLabel, BackLabel, Shapes
 
 class BaseLabelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
-        # Build model instance for validation
-        instance = self.instance or self.Meta.model(**attrs)
+        # If 'trolley' is required for validation, make sure it's present
+        trolley = attrs.get('trolley') or (
+            self.instance.trolley if self.instance else None
+            )
 
-        # Set pk if updating existing instance
-        if self.instance:
-            instance.pk = self.instance.pk
+        # Only call model validations if trolley is available
+        if trolley:
+            instance = self.instance or self.Meta.model(
+                trolley=trolley, **attrs
+                )
 
-        # Call the validation methods on the model instance
-        instance.validate_max_totes()
-        instance.validate_unique_shape()
+            # Set pk if updating
+            if self.instance:
+                instance.pk = self.instance.pk
+
+            instance.validate_max_totes()
+            instance.validate_unique_shape()
 
         return attrs
 
