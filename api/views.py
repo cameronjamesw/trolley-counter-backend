@@ -2,9 +2,14 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Trolley, FrontLabel, BackLabel
-from .serializers import TrolleySerializer, FrontLabelSerializer, BackLabelSerializer
+from .serializers import (
+    TrolleySerializer,
+    FrontLabelSerializer,
+    BackLabelSerializer,
+)
 
 # Create your views here.
+
 
 class UserDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -17,15 +22,16 @@ class UserDetailView(APIView):
             "email": user.email,
         })
 
+
 class TrolleyView(generics.ListCreateAPIView):
     queryset = Trolley.objects.all()
     serializer_class = TrolleySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # adjust permissions as needed
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         # You can customize filtering here if needed
         return super().get_queryset()
-    
+
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
 
@@ -48,7 +54,6 @@ class FrontLabelListCreateAPIView(generics.ListCreateAPIView):
         # Optionally, add extra validation if trolley exists etc.
         serializer.save(trolley_id=trolley_id)
         serializer.save(creator=self.request.user)
-        
 
 
 class BackLabelListCreateAPIView(generics.ListCreateAPIView):
@@ -63,9 +68,11 @@ class BackLabelListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(trolley_id=trolley_id)
         serializer.save(creator=self.request.user)
 
+
 class FrontLabelDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = FrontLabel.objects.all()
     serializer_class = FrontLabelSerializer
+
 
 class BackLabelDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BackLabel.objects.all()

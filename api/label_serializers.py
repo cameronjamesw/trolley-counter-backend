@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import FrontLabel, BackLabel, Shapes
 
+
 class BaseLabelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         # Build model instance for validation
@@ -16,6 +17,7 @@ class BaseLabelSerializer(serializers.ModelSerializer):
 
         return attrs
 
+
 class FrontLabelSerializer(BaseLabelSerializer):
     creator = serializers.ReadOnlyField(source='creator.username')
     shape_name = serializers.SerializerMethodField()
@@ -29,10 +31,11 @@ class FrontLabelSerializer(BaseLabelSerializer):
     def get_shape_name(self, obj):
         return Shapes(obj.shape).label
 
+
 class BackLabelSerializer(BaseLabelSerializer):
     creator = serializers.ReadOnlyField(source='creator.username')
     shape_name = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = BackLabel
         fields = ['id', 'creator', 'trolley', 'shape',

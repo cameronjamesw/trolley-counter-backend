@@ -4,9 +4,11 @@ from .mixins import LabelValidationMixin
 
 # Create your models here.
 
+
 class Count(models.IntegerChoices):
     EIGHT = 1, 'Eight Totes'
     TEN = 2, 'Ten Totes'
+
 
 class Shapes(models.IntegerChoices):
     SQUARE = 1, 'Square'
@@ -20,12 +22,14 @@ class Shapes(models.IntegerChoices):
     BOWTIE = 9, 'Bowtie'
     AIRPLANE = 10, 'Airplane'
 
+
 class Trolley(models.Model):
-    creator = models.ForeignKey(User, 
-                                on_delete=models.SET_NULL, 
+    creator = models.ForeignKey(User,
+                                on_delete=models.SET_NULL,
                                 null=True, default=None,
                                 related_name="trollies")
-    totes_count = models.IntegerField(choices=Count.choices, default=Count.EIGHT)
+    totes_count = models.IntegerField(
+        choices=Count.choices, default=Count.EIGHT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     notes = models.TextField(max_length=200, blank=True)
@@ -33,7 +37,7 @@ class Trolley(models.Model):
 
     def __str__(self):
         return f"Trolley number {self.id}"
-    
+
     @property
     def front_label_count(self):
         return self.frontlabel_set.count()
@@ -48,12 +52,14 @@ class Trolley(models.Model):
 
     @property
     def missing_front_labels(self):
-        missing_shapes = self.frontlabel_set.filter(checked=False).values_list('shape', flat=True)
+        missing_shapes = self.frontlabel_set.filter(
+            checked=False).values_list('shape', flat=True)
         return [Shapes(shape).label for shape in missing_shapes]
 
     @property
     def missing_back_labels(self):
-        missing_shapes = self.backlabel_set.filter(checked=False).values_list('shape', flat=True)
+        missing_shapes = self.backlabel_set.filter(
+            checked=False).values_list('shape', flat=True)
         return [Shapes(shape).label for shape in missing_shapes]
 
     @property
@@ -64,9 +70,10 @@ class Trolley(models.Model):
     def missing_back_labels_count(self):
         return self.backlabel_set.filter(checked=False).count()
 
+
 class FrontLabel(LabelValidationMixin, models.Model):
-    creator = models.ForeignKey(User, 
-                                on_delete=models.SET_NULL, 
+    creator = models.ForeignKey(User,
+                                on_delete=models.SET_NULL,
                                 null=True, default=None,
                                 related_name="front_labels")
     trolley = models.ForeignKey(Trolley, on_delete=models.CASCADE)
@@ -75,7 +82,10 @@ class FrontLabel(LabelValidationMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"A front, {self.get_shape_display()} label, linked to trolley number: {self.trolley.id} | Created at {self.created_at}"
+        return (
+            f"A front, {self.get_shape_display()} label, linked to trolley "
+            f"number: {self.trolley.id} | Created at {self.created_at}"
+        )
 
     def clean(self):
         super().clean()
@@ -89,8 +99,8 @@ class FrontLabel(LabelValidationMixin, models.Model):
 
 
 class BackLabel(LabelValidationMixin, models.Model):
-    creator = models.ForeignKey(User, 
-                                on_delete=models.SET_NULL, 
+    creator = models.ForeignKey(User,
+                                on_delete=models.SET_NULL,
                                 null=True, default=None,
                                 related_name="back_labels")
     trolley = models.ForeignKey(Trolley, on_delete=models.CASCADE)
@@ -99,7 +109,10 @@ class BackLabel(LabelValidationMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"A back, {self.get_shape_display()} label, linked to trolley number: {self.trolley.id} | Created at {self.created_at}"
+        return (
+            f"A back, {self.get_shape_display()} label, linked to trolley"
+            f" number: {self.trolley.id} | Created at {self.created_at}"
+            )
 
     def clean(self):
         super().clean()
