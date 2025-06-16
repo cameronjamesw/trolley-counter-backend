@@ -27,6 +27,10 @@ class FrontLabelSerializer(BaseLabelSerializer):
         fields = ['id', 'creator', 'trolley', 'shape',
                   'shape_name', 'checked', 'created_at']
         read_only_fields = ['created_at']
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'trolley': {'required': False}
+        }
 
     def get_shape_name(self, obj):
         return Shapes(obj.shape).label
@@ -41,6 +45,10 @@ class BackLabelSerializer(BaseLabelSerializer):
         fields = ['id', 'creator', 'trolley', 'shape',
                   'shape_name', 'checked', 'created_at']
         read_only_fields = ['created_at']
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'trolley': {'required': False}
+        }
 
     def get_shape_name(self, obj):
         return Shapes(obj.shape).label

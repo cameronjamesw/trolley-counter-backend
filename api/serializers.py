@@ -6,35 +6,35 @@ from .label_serializers import FrontLabelSerializer, BackLabelSerializer
 
 class TrolleySerializer(serializers.ModelSerializer):
     creator = serializers.ReadOnlyField(source='creator.username')
+    front_labels = FrontLabelSerializer(many=True, required=False)
     front_label_count = serializers.IntegerField(read_only=True)
-    back_label_count = serializers.IntegerField(read_only=True)
-    total_label_count = serializers.IntegerField(read_only=True)
-    pinned_id = serializers.SerializerMethodField()
     missing_front_labels = serializers.ListField(
-        child=serializers.CharField(), read_only=True)
+            child=serializers.CharField(), read_only=True)
+    missing_front_labels_count = serializers.IntegerField(read_only=True)
+
+    back_labels = BackLabelSerializer(many=True, required=False)
+    back_label_count = serializers.IntegerField(read_only=True)
     missing_back_labels = serializers.ListField(
         child=serializers.CharField(), read_only=True)
-    missing_front_labels_count = serializers.IntegerField(read_only=True)
     missing_back_labels_count = serializers.IntegerField(read_only=True)
 
-    front_labels = FrontLabelSerializer(many=True, required=False)
-    back_labels = BackLabelSerializer(many=True, required=False)
+    total_label_count = serializers.IntegerField(read_only=True)
+    pinned_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Trolley
         fields = [
-            'id', 'creator', 'totes_count', 'notes', 'in_use', 'created_at',
-            'updated_at', 'front_label_count', 'back_label_count',
-            'total_label_count', 'pinned_id', 'missing_front_labels',
-            'missing_back_labels', 'missing_front_labels_count',
-            'missing_back_labels_count', 'front_labels', 'back_labels',
+            'id', 'creator', 'totes_count', 'notes', 'in_use', 'front_labels',
+            'front_label_count', 'missing_front_labels',
+            'missing_front_labels_count', 'back_labels', 'back_label_count',
+            'missing_back_labels', 'missing_back_labels_count',
+            'total_label_count', 'pinned_id', 'created_at', 'updated_at',
         ]
         read_only_fields = (
-            'creator', 'created_at', 'updated_at',
-            'front_label_count', 'back_label_count', 'pinned_id',
-            'total_label_count', 'missing_front_labels',
-            'missing_back_labels', 'missing_front_labels_count',
-            'missing_back_labels_count',
+            'creator', 'front_label_count', 'missing_front_labels',
+            'missing_front_labels_count', 'back_labels', 'back_label_count',
+            'missing_back_labels', 'missing_back_labels_count',
+            'total_label_count', 'pinned_id', 'created_at', 'updated_at',
         )
 
     def to_representation(self, instance):
@@ -52,34 +52,22 @@ class TrolleySerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        front_labels_data = validated_data.pop('front_labels', [])
-        back_labels_data = validated_data.pop('back_labels', [])
+        front_labels_data = validated_data.pop('front_labels')
+        back_labels_data = validated_data.pop('back_labels')
 
-        # Create the trolley first
-        trolley = Trolley.objects.create(**validated_data)
+        # Assign current user as creator
+        request = self.context.get('request')
+        creator = request.user if request else None
 
-        request = self.context.get("request", None)
-        user = (
-            request.user
-            if request and request.user.is_authenticated
-            else None
-            )
+        trolley = Trolley.objects.create(creator=creator, **validated_data)
 
-        # Validate and create front labels
+        # Save front labels
         for label_data in front_labels_data:
-            label_data['trolley'] = trolley
-            serializer = FrontLabelSerializer(data=label_data,
-                                              context=self.context)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(creator=user)
+            FrontLabel.objects.create(trolley=trolley, **label_data)
 
-        # Validate and create back labels
+        # Save back labels
         for label_data in back_labels_data:
-            label_data['trolley'] = trolley
-            serializer = BackLabelSerializer(data=label_data,
-                                             context=self.context)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(creator=user)
+            BackLabel.objects.create(trolley=trolley, **label_data)
 
         return trolley
 
