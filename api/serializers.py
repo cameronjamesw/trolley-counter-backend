@@ -3,6 +3,7 @@ from .models import Trolley, FrontLabel, BackLabel, Count
 from pinned.models import Pinned
 from .label_serializers import FrontLabelSerializer, BackLabelSerializer
 
+
 class TrolleySerializer(serializers.ModelSerializer):
     creator = serializers.ReadOnlyField(source='creator.username')
     front_label_count = serializers.IntegerField(read_only=True)
@@ -22,8 +23,8 @@ class TrolleySerializer(serializers.ModelSerializer):
     class Meta:
         model = Trolley
         fields = [
-            'id', 'creator', 'totes_count', 'notes', 'in_use', 'created_at', 
-            'updated_at','front_label_count', 'back_label_count',
+            'id', 'creator', 'totes_count', 'notes', 'in_use', 'created_at',
+            'updated_at', 'front_label_count', 'back_label_count',
             'total_label_count', 'pinned_id', 'missing_front_labels',
             'missing_back_labels', 'missing_front_labels_count',
             'missing_back_labels_count', 'front_labels', 'back_labels',
@@ -32,7 +33,7 @@ class TrolleySerializer(serializers.ModelSerializer):
             'creator', 'created_at', 'updated_at',
             'front_label_count', 'back_label_count', 'pinned_id',
             'total_label_count', 'missing_front_labels',
-            'missing_back_labels', 'missing_front_labels_count', 
+            'missing_back_labels', 'missing_front_labels_count',
             'missing_back_labels_count',
         )
 
@@ -40,7 +41,7 @@ class TrolleySerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         rep['totes_count'] = Count(instance.totes_count).label
         return rep
-    
+
     def get_pinned_id(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
@@ -49,7 +50,7 @@ class TrolleySerializer(serializers.ModelSerializer):
             ).first()
             return pinned.id if pinned else None
         return None
-    
+
     def create(self, validated_data):
         front_labels_data = validated_data.pop('front_labels', [])
         back_labels_data = validated_data.pop('back_labels', [])
