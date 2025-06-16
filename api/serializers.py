@@ -52,22 +52,28 @@ class TrolleySerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        front_labels_data = validated_data.pop('front_labels')
-        back_labels_data = validated_data.pop('back_labels')
+        front_labels_data = validated_data.pop('front_labels', [])
+        back_labels_data = validated_data.pop('back_labels', [])
+        user = self.context['request'].user
 
-        # Assign current user as creator
-        request = self.context.get('request')
-        creator = request.user if request else None
+        # Create trolley first
+        trolley = Trolley.objects.create(**validated_data)
 
-        trolley = Trolley.objects.create(creator=creator, **validated_data)
-
-        # Save front labels
+        # Create related front labels
         for label_data in front_labels_data:
-            FrontLabel.objects.create(trolley=trolley, **label_data)
+            FrontLabel.objects.create(
+                trolley=trolley,
+                creator=user,
+                **label_data
+            )
 
-        # Save back labels
+        # Create related back labels
         for label_data in back_labels_data:
-            BackLabel.objects.create(trolley=trolley, **label_data)
+            BackLabel.objects.create(
+                trolley=trolley,
+                creator=user,
+                **label_data
+            )
 
         return trolley
 
