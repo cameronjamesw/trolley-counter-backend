@@ -70,6 +70,9 @@ class Trolley(models.Model):
     def missing_back_labels_count(self):
         return self.backlabel_set.filter(checked=False).count()
 
+    class Meta:
+        ordering = ['-created_at']
+
 
 class FrontLabel(LabelValidationMixin, models.Model):
     creator = models.ForeignKey(User,
