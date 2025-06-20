@@ -105,6 +105,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
     'dj_rest_auth',
+    'django_filters',
     'django.contrib.sites',
     'allauth',
     'allauth.account',

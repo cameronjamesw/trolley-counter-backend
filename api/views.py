@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Trolley, FrontLabel, BackLabel
@@ -44,6 +45,8 @@ class TrolleyInfo(generics.RetrieveUpdateDestroyAPIView):
 
 class FrontLabelListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = FrontLabelSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['trolley']
 
     def get_queryset(self):
         trolley_id = self.kwargs['trolley_id']
@@ -58,6 +61,8 @@ class FrontLabelListCreateAPIView(generics.ListCreateAPIView):
 
 class BackLabelListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = BackLabelSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['trolley']
 
     def get_queryset(self):
         trolley_id = self.kwargs['trolley_id']
