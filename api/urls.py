@@ -14,8 +14,12 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    path('back-labels/', BackLabelListCreateAPIView.as_view(),
+         name='back-label'),
     path('back-labels/<int:pk>/',
          BackLabelDetailView.as_view(), name='back-label-detail'),
+    path('front-labels/', FrontLabelListCreateAPIView.as_view(),
+         name="front-label"),
     path('front-labels/<int:pk>/',
          FrontLabelDetailView.as_view(), name='front-label-detail'),
     path('pinned/', include('pinned.urls')),

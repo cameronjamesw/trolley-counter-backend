@@ -47,10 +47,7 @@ class FrontLabelListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = FrontLabelSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['trolley']
-
-    def get_queryset(self):
-        trolley_id = self.kwargs['trolley_id']
-        return FrontLabel.objects.filter(trolley_id=trolley_id)
+    queryset = FrontLabel.objects.all()
 
     def perform_create(self, serializer):
         trolley_id = self.kwargs['trolley_id']
@@ -63,10 +60,7 @@ class BackLabelListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = BackLabelSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['trolley']
-
-    def get_queryset(self):
-        trolley_id = self.kwargs['trolley_id']
-        return BackLabel.objects.filter(trolley_id=trolley_id)
+    queryset = BackLabel.objects.all()
 
     def perform_create(self, serializer):
         trolley_id = self.kwargs['trolley_id']
