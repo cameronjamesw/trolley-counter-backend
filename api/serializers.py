@@ -8,12 +8,16 @@ class TrolleySerializer(serializers.ModelSerializer):
     creator = serializers.ReadOnlyField(source='creator.username')
     front_labels = FrontLabelSerializer(many=True, required=False)
     front_label_count = serializers.IntegerField(read_only=True)
+    present_front_labels = serializers.ListField(
+        child=serializers.CharField(), read_only=True)
     missing_front_labels = serializers.ListField(
             child=serializers.CharField(), read_only=True)
     missing_front_labels_count = serializers.IntegerField(read_only=True)
 
     back_labels = BackLabelSerializer(many=True, required=False)
     back_label_count = serializers.IntegerField(read_only=True)
+    present_back_labels = serializers.ListField(
+        child=serializers.CharField(), read_only=True)
     missing_back_labels = serializers.ListField(
         child=serializers.CharField(), read_only=True)
     missing_back_labels_count = serializers.IntegerField(read_only=True)
@@ -25,14 +29,16 @@ class TrolleySerializer(serializers.ModelSerializer):
         model = Trolley
         fields = [
             'id', 'creator', 'totes_count', 'notes', 'in_use', 'front_labels',
-            'front_label_count', 'missing_front_labels',
-            'missing_front_labels_count', 'back_labels', 'back_label_count',
+            'front_label_count', 'present_front_labels',
+            'missing_front_labels', 'missing_front_labels_count',
+            'back_labels', 'back_label_count', 'present_back_labels',
             'missing_back_labels', 'missing_back_labels_count',
             'total_label_count', 'pinned_id', 'created_at', 'updated_at',
         ]
         read_only_fields = (
-            'creator', 'front_label_count', 'missing_front_labels',
-            'missing_front_labels_count', 'back_labels', 'back_label_count',
+            'creator', 'front_label_count', 'present_front_labels',
+            'missing_front_labels', 'missing_front_labels_count',
+            'back_labels', 'back_label_count', 'present_back_labels',
             'missing_back_labels', 'missing_back_labels_count',
             'total_label_count', 'pinned_id', 'created_at', 'updated_at',
         )

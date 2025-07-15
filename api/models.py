@@ -51,6 +51,18 @@ class Trolley(models.Model):
         return self.front_label_count + self.back_label_count
 
     @property
+    def present_front_labels(self):
+        present_shapes = self.frontlabel_set.filter(
+            checked=True).values_list('shape', flat=True)
+        return [Shapes(shape).label for shape in present_shapes]
+
+    @property
+    def present_back_labels(self):
+        present_shapes = self.backlabel_set.filter(
+            checked=True).values_list('shape', flat=True)
+        return [Shapes(shape).label for shape in present_shapes]
+
+    @property
     def missing_front_labels(self):
         missing_shapes = self.frontlabel_set.filter(
             checked=False).values_list('shape', flat=True)
