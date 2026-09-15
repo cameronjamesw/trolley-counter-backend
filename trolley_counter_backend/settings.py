@@ -60,19 +60,22 @@ ALLOWED_HOSTS = [
    'localhost',
     '127.0.0.1',
     'trolley-counter-backend.onrender.com',
+    'trolley-counter-frontend.onrender.com',
     os.environ.get("ALLOWED_HOST"),
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1",
-    'https://trolley-counter-backend.onrender.com'
+    'https://trolley-counter-backend.onrender.com',
+    'https://trolley-counter-frontend.onrender.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://localhost:3000',
-    'https://trolley-counter-backend.onrender.com'
+    'https://trolley-counter-backend.onrender.com',
+    'https://trolley-counter-frontend.onrender.com',
 ]
 
 if 'CLIENT_ORIGIN' in os.environ:
