@@ -54,7 +54,7 @@ REST_AUTH_SERIALIZERS = {
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '.herokuapp.com',
@@ -64,14 +64,12 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://trolley-counter-backend-3f175e45a111.herokuapp.com",
+    "http://localhost",
+    "http://127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.herokuapp.com',
     'http://127.0.0.1:8000',
-    'https://trolley-counter-backend-3f175e45a111.herokuapp.com',
     'http://localhost:3000',
 ]
 
@@ -82,8 +80,8 @@ if 'CLIENT_ORIGIN' in os.environ:
 CORS_ALLOW_CREDENTIALS = True
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_LOGIN_METHODS = {'username'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
