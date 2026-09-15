@@ -57,7 +57,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-   'localhost',
+    'localhost',
     '127.0.0.1',
     'trolley-counter-backend.onrender.com',
     'trolley-counter-frontend.onrender.com',
